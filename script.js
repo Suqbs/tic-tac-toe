@@ -7,8 +7,6 @@ const gameBoard = (function () {
     .fill()
     .map(() => Array(_columns).fill("")); //Create 2D Array
 
-  console.log(gameBoard[1][2]);
-
   //Gameboard interaction
   const getGameBoard = () => gameBoard; // no need
 
@@ -17,11 +15,13 @@ const gameBoard = (function () {
       console.log("Çalıştı");
       console.log(gameBoard[row][column] || symbol);
       gameBoard[row][column] = gameBoard[row][column] || symbol; //if it's empty string then assign player symbol.
+
+      console.log("Sütun atandıktan sonra", getGameBoard());
+      return true;
     } else {
       console.log("Çalışmadı");
+      return false;
     }
-
-    console.log("Sütun atandıktan sonra", getGameBoard());
   };
 
   return {
@@ -39,7 +39,6 @@ const createPlayer = function (name, symbol) {
 };
 
 const gameController = (function () {
-  //   const board = gameBoard.getGameBoard();
   const board = gameBoard.getGameBoard();
   const x_Player = createPlayer("Furkan", "X");
   const o_Player = createPlayer("Buse", "O");
@@ -48,17 +47,25 @@ const gameController = (function () {
 
   const makeMove = function (row, column) {
     gameBoard.setGameBoard(row, column, activePlayer.symbol);
+    nextRound();
   };
 
   const switchPlayerTurn = function () {
     activePlayer = activePlayer === x_Player ? o_Player : x_Player;
   };
-  
-  const playRound = function () {
-    
+
+  const newRound = function () {
+    console.log(`Sıranın sahibi: ${activePlayer.name}`);
+  };
+
+  const nextRound = function () {
+    switchPlayerTurn();
   };
 
   return {
-    playRound
+    newRound,
+    makeMove,
   };
 })();
+
+gameController.newRound();
