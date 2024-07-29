@@ -3,27 +3,62 @@ const gameBoard = (function () {
   const _rows = 3;
   const _columns = 3;
 
-  let _gameBoard = Array(_rows)
+  let gameBoard = Array(_rows)
     .fill()
     .map(() => Array(_columns).fill("")); //Create 2D Array
 
-  console.log(_gameBoard); //Logging array
+  console.log(gameBoard[1][2]);
 
-  //Setting a getter for gameBoard
-  const getGameBoard = () => _gameBoard;
+  //Gameboard interaction
+  const getGameBoard = () => gameBoard; // no need
+
+  const setGameBoard = function (row, column, symbol) {
+    if (!(gameBoard[row][column] === undefined)) {
+      console.log("Çalıştı");
+      console.log(gameBoard[row][column] || symbol);
+      gameBoard[row][column] = gameBoard[row][column] || symbol; //if it's empty string then assign player symbol.
+    } else {
+      console.log("Çalışmadı");
+    }
+
+    console.log("Sütun atandıktan sonra", getGameBoard());
+  };
 
   return {
     getGameBoard,
+    setGameBoard,
   };
 })();
 
-const createPlayer = function (name) {
-  let score = 0; //Create private score variable for each player object
-  const getScore = () => score;
-  const giveScore = () => score++;
+const createPlayer = function (name, symbol) {
+  let _score = 0; //Create private score variable for each player object
+  const getScore = () => _score;
+  const giveScore = () => _score++;
 
-  return { name, getScore, giveScore };
-}
+  return { name, symbol, getScore, giveScore };
+};
 
-// const Player1 = createPlayer("Furkan");
-// const Player2 = createPlayer("Serkan");
+const gameController = (function () {
+  //   const board = gameBoard.getGameBoard();
+  const board = gameBoard.getGameBoard();
+  const x_Player = createPlayer("Furkan", "X");
+  const o_Player = createPlayer("Buse", "O");
+
+  let activePlayer = x_Player;
+
+  const makeMove = function (row, column) {
+    gameBoard.setGameBoard(row, column, activePlayer.symbol);
+  };
+
+  const switchPlayerTurn = function () {
+    activePlayer = activePlayer === x_Player ? o_Player : x_Player;
+  };
+  
+  const playRound = function () {
+    
+  };
+
+  return {
+    playRound
+  };
+})();
