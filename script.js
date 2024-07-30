@@ -1,11 +1,10 @@
 const gameBoard = (function () {
   //Defining the size of the game area
-  const _rows = 3;
-  const _columns = 3;
+  const _gridSize = 3; // 3 x 3
 
-  let gameBoard = Array(_rows)
+  let gameBoard = Array(_gridSize)
     .fill()
-    .map(() => Array(_columns).fill("")); //Create 2D Array
+    .map(() => Array(_gridSize).fill("")); //Create 2D Array
 
   //Gameboard interaction
   const getGameBoard = () => gameBoard; // no need
@@ -45,9 +44,39 @@ const gameController = (function () {
 
   let activePlayer = x_Player;
 
+  const checkWinner = function () {
+    const isSame = function (array, controlValue) {
+        const _isSame = (currentValue) => !(currentValue === "") && currentValue === controlValue; 
+        return array.every(_isSame);
+    }
+
+    // check horizontal equality
+    for (let row = 0; row < board.length; row++) {
+        const firstCell = board[row][0];
+
+        if(isSame(board[row], firstCell))
+        {
+            console.log("Yatayda 3'üde eşit.")
+        }
+    }
+
+    // check vertical equality
+    for (let column = 0; column < board.length; column++) {
+        let verticalArray = [];
+
+        for (let row = 0; row < board.length; row++) {
+            verticalArray.push(board[row][column]);
+        }
+
+        
+    }
+  };
+
   const makeMove = function (row, column) {
-    gameBoard.setGameBoard(row, column, activePlayer.symbol);
-    nextRound();
+    if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
+      checkWinner(); // actually it needs to check it after at least two moves but, it is good for now.
+      nextRound(); // If it's empty block, go to nextRound :)
+    }
   };
 
   const switchPlayerTurn = function () {
@@ -55,17 +84,25 @@ const gameController = (function () {
   };
 
   const newRound = function () {
-    console.log(`Sıranın sahibi: ${activePlayer.name}`);
+    console.log("Yeni Round, Sıranın sahibi:", activePlayer);
   };
 
   const nextRound = function () {
+    console.log("-------------------------------------------------------")
     switchPlayerTurn();
+    console.log("Round Devamı, Sıranın sahibi:", activePlayer);
   };
 
   return {
     newRound,
     makeMove,
+    activePlayer,
+    checkWinner
   };
 })();
 
 gameController.newRound();
+gameController.makeMove(0,0);
+gameController.makeMove(1,0);
+gameController.makeMove(0,1);
+gameController.makeMove(1,1);
