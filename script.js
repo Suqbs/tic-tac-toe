@@ -10,10 +10,13 @@ const gameBoard = (function () {
   const getGameBoard = () => gameBoard; // no need
 
   const setGameBoard = function (row, column, symbol) {
-    if (!(gameBoard[row][column] === undefined)) {
-      //   console.log("Çalıştı");
-      //   console.log(gameBoard[row][column] || symbol);
-      gameBoard[row][column] = gameBoard[row][column] || symbol; //if it's empty string then assign player symbol.
+    if (
+      !(gameBoard[row][column] === undefined) &&
+      gameBoard[row][column] === ""
+    ) {
+      // look if it's truthy
+
+      gameBoard[row][column] = symbol;
 
       console.log("Sütun atandıktan sonra", getGameBoard());
       return true;
@@ -41,6 +44,7 @@ const gameController = (function () {
   const board = gameBoard.getGameBoard();
   const x_Player = createPlayer("Furkan", "X");
   const o_Player = createPlayer("Buse", "O");
+  const _numberOfMoves = 0;
 
   let activePlayer = x_Player;
 
@@ -56,6 +60,7 @@ const gameController = (function () {
       const firstCell = board[row][0];
 
       if (isSame(board[row], firstCell)) {
+        console.log("Yatayda üçü eşit, kazandınız");
         return true;
       }
     }
@@ -70,6 +75,7 @@ const gameController = (function () {
       }
 
       if (isSame(verticalArray, firstCell)) {
+        console.log("Dikeyde üçü eşit, kazandınız");
         return true;
       }
     }
@@ -91,6 +97,7 @@ const gameController = (function () {
       isSame(firstDiagonalArray, firstDiagonalArray[0]) ||
       isSame(secondDiagonalArray, secondDiagonalArray[0])
     ) {
+      console.log("Çaprazda üçü eşit, kazandınız");
       return true;
     }
 
@@ -99,8 +106,9 @@ const gameController = (function () {
 
   const makeMove = function (row, column) {
     if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
+      // check if it's a valid move
       checkWinner(); // actually it needs to check it after at least two moves but, it is good for now.
-      nextRound(); // If it's empty block, go to nextRound :)
+      nextRound();
     }
   };
 
@@ -127,10 +135,12 @@ const gameController = (function () {
 })();
 
 gameController.newRound();
-// gameController.makeMove(0,0); //Horizontal test
-// gameController.makeMove(1,0);
-// gameController.makeMove(0,1);
-// gameController.makeMove(1,1);
+gameController.makeMove(0, 0); //Horizontal test
+gameController.makeMove(1, 0);
+gameController.makeMove(0, 1);
+gameController.makeMove(1, 1);
+gameController.makeMove(2, 0);
+// gameController.makeMove(1, 2);
 
 // gameController.makeMove(0, 0); //Vertical test
 // gameController.makeMove(0, 1);
@@ -141,7 +151,5 @@ gameController.newRound();
 // gameController.makeMove(0, 0); // diagonal test
 // gameController.makeMove(1, 0),
 // gameController.makeMove(1, 1);
+// gameController.makeMove(2, 1);
 // gameController.makeMove(2, 2);
-// // gameController.makeMove(2, 2);
-// gameController.makeMove(0, 2);
-// gameController.makeMove(2, 0);
