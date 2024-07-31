@@ -30,7 +30,6 @@ const gameBoard = (function () {
     gameBoard.forEach((arr, index) => {
       gameBoard[index] = arr.map((item) => (item = ""));
     });
-  console.log("Reset func", resetGameBoard());
 
   return {
     getGameBoard,
@@ -43,8 +42,9 @@ const createPlayer = function (name, symbol) {
   let _score = 0; //Create private score variable for each player object
   const getScore = () => _score;
   const giveScore = () => _score++;
+  const resetScore = () => _score = 0;
 
-  return { name, symbol, getScore, giveScore };
+  return { name, symbol, getScore, giveScore, resetScore };
 };
 
 const gameController = (function () {
@@ -91,7 +91,6 @@ const gameController = (function () {
     let firstDiagonalArray = [];
     let secondDiagonalArray = [];
     for (let i = 0; i < board.length; i++) {
-      // check this tomorrow if it works or not
       const reverseIndex = board.length - 1 - i;
 
       let cell = board[i][i];
@@ -131,20 +130,50 @@ const gameController = (function () {
     }
   };
 
-  const newGame = function () { // newGame includes all three rounds
-    console.log("Yeni Round, Sıranın sahibi:", activePlayer);
+  const newGame = function () {
+    // newGame includes all three rounds
+    console.log("Yeni oyun");
+    gameBoard.resetGameBoard();
+
+    x_Player.resetScore();
+    o_Player.resetScore();
   };
 
-  const nextRound = function () { // After Round
-    console.log("-------------------------------------------------------");
+  const nextRound = function () {
+    // After Round
+    console.log("Yeni round");
+    gameBoard.resetGameBoard();
+    
+    x_Player.resetScore();
+    o_Player.resetScore();
 
     roundCounter++;
-    console.log("Round Devamı, Sıranın sahibi:", activePlayer);
   };
 
-  const endGame = function () {};
+  const endGame = function () {
 
-  const checkWinner = function () {};
+  };
+
+  const checkWinner = function () {
+    const x_PlayerScore = x_Player.getScore();
+    const o_PlayerScore = o_Player.getScore();
+
+    if (roundCounter < 4) {
+      // last player who makes winning move is the winner
+      activePlayer.giveScore();
+      return activePlayer;
+    } else {
+      let gameWinner;
+      if (x_PlayerScore > o_PlayerScore) {
+        gameWinner = x_Player;
+      } else if (x_PlayerScore < o_PlayerScore) {
+        gameWinner = o_Player;
+      } else {
+        gameWinner = { x_Player, o_Player };
+      }
+      endGame(gameWinner);
+    }
+  };
 
   return {
     newGame,
