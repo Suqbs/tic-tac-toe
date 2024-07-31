@@ -56,8 +56,7 @@ const gameController = (function () {
       const firstCell = board[row][0];
 
       if (isSame(board[row], firstCell)) {
-        console.log("Yatayda 3'üde eşit.");
-        break;
+        return true;
       }
     }
 
@@ -69,18 +68,17 @@ const gameController = (function () {
       for (let row = 0; row < board.length; row++) {
         verticalArray.push(board[row][column]);
       }
-    //   console.log(verticalArray);
 
       if (isSame(verticalArray, firstCell)) {
-        console.log("Dikeyde 3'üde eşit.");
-        break;
+        return true;
       }
     }
 
     // check diagonal equality
-    let firstDiagonalArray = []; 
+    let firstDiagonalArray = [];
     let secondDiagonalArray = [];
-    for (let i = 0; i < board.length; i++) { // check this tomorrow if it works or not
+    for (let i = 0; i < board.length; i++) {
+      // check this tomorrow if it works or not
       const reverseIndex = board.length - 1 - i;
 
       let cell = board[i][i];
@@ -88,14 +86,15 @@ const gameController = (function () {
 
       cell = board[reverseIndex][i];
       secondDiagonalArray.push(cell);
-      
     }
-    if(isSame(firstDiagonalArray, firstDiagonalArray[0]) || isSame(secondDiagonalArray, secondDiagonalArray[0]))
-    {
-        console.log("Çaprazda eşit.")
-        console.log("First", firstDiagonalArray);
-        console.log("Second", secondDiagonalArray);
+    if (
+      isSame(firstDiagonalArray, firstDiagonalArray[0]) ||
+      isSame(secondDiagonalArray, secondDiagonalArray[0])
+    ) {
+      return true;
     }
+
+    return false;
   };
 
   const makeMove = function (row, column) {
@@ -146,4 +145,3 @@ gameController.newRound();
 // // gameController.makeMove(2, 2);
 // gameController.makeMove(0, 2);
 // gameController.makeMove(2, 0);
-
