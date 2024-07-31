@@ -26,16 +26,16 @@ const gameBoard = (function () {
     return false;
   };
 
-  const resetGameBoard = () => gameBoard.forEach((arr, index) => {
-    console.log(arr);
-    gameBoard[index] = arr.map(item => item = "");
-  })
+  const resetGameBoard = () =>
+    gameBoard.forEach((arr, index) => {
+      gameBoard[index] = arr.map((item) => (item = ""));
+    });
   console.log("Reset func", resetGameBoard());
 
   return {
     getGameBoard,
     setGameBoard,
-    resetGameBoard
+    resetGameBoard,
   };
 })();
 
@@ -51,10 +51,11 @@ const gameController = (function () {
   const board = gameBoard.getGameBoard();
   const x_Player = createPlayer("Furkan", "X");
   const o_Player = createPlayer("Buse", "O");
+  let roundCounter = 1;
 
   let activePlayer = x_Player;
 
-  const checkWinner = function (numberOfMoves) {
+  const checkWinningCondition = function (numberOfMoves) {
     const isSame = function (array, controlValue) {
       const _isSame = (currentValue) =>
         !(currentValue === "") && currentValue === controlValue;
@@ -107,9 +108,15 @@ const gameController = (function () {
       return true;
     }
 
-    // check 
+    if (numberOfMoves === 9) {
+      console.log("Beraberlik");
+    }
 
     return false;
+  };
+
+  const switchPlayerTurn = function () {
+    activePlayer = activePlayer === x_Player ? o_Player : x_Player;
   };
 
   let _numberOfMoves = 0;
@@ -118,31 +125,32 @@ const gameController = (function () {
       // check if it's a valid move
       _numberOfMoves++;
 
-      if (_numberOfMoves > 2) checkWinner(_numberOfMoves);
+      if (_numberOfMoves > 2) checkWinningCondition(_numberOfMoves);
 
-      roundReset();
+      switchPlayerTurn(); // switch player turn after a move
     }
   };
 
-  const switchPlayerTurn = function () {
-    activePlayer = activePlayer === x_Player ? o_Player : x_Player;
-  };
-
-  const newGame = function () {
+  const newGame = function () { // newGame includes all three rounds
     console.log("Yeni Round, Sıranın sahibi:", activePlayer);
   };
 
-  const roundReset = function () {
+  const nextRound = function () { // After Round
     console.log("-------------------------------------------------------");
-    switchPlayerTurn();
+
+    roundCounter++;
     console.log("Round Devamı, Sıranın sahibi:", activePlayer);
   };
+
+  const endGame = function () {};
+
+  const checkWinner = function () {};
 
   return {
     newGame,
     makeMove,
     activePlayer,
-    checkWinner,
+    checkWinningCondition,
   };
 })();
 
