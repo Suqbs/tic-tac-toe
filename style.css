@@ -23,3 +23,9 @@ video {
   max-width: 100%;
 }
 /* CSS RESET ENDS HERE */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2%;
+}
