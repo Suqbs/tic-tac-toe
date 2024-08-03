@@ -18,7 +18,13 @@ const gameBoard = (function () {
 
       gameBoard[row][column] = symbol;
 
-      console.log("Sütun atandıktan sonra", getGameBoard());
+      getGameBoard().forEach((item) => {
+        // debugging purposes only
+        const clonedArray = [...item];
+        console.log(clonedArray);
+      });
+      console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
       return true;
     }
 
@@ -42,7 +48,7 @@ const createPlayer = function (name, symbol) {
   let _score = 0; //Create private score variable for each player object
   const getScore = () => _score;
   const giveScore = () => _score++;
-  const resetScore = () => _score = 0;
+  const resetScore = () => (_score = 0);
 
   return { name, symbol, getScore, giveScore, resetScore };
 };
@@ -52,10 +58,127 @@ const gameController = (function () {
   const x_Player = createPlayer("Furkan", "X");
   const o_Player = createPlayer("Buse", "O");
   let roundCounter = 1;
+  let _numberOfMoves = 0;
 
   let activePlayer = x_Player;
 
-  const checkWinningCondition = function (numberOfMoves) {
+  const newGame = function () {
+    // newGame includes all three rounds
+
+    console.log("---------------------------------------------");
+    console.log("Yeni oyun");
+    console.log("---------------------------------------------");
+    console.log("Round:", roundCounter);
+
+    /* Reset */
+    _numberOfMoves = 0;
+    gameBoard.resetGameBoard();
+    x_Player.resetScore();
+    o_Player.resetScore();
+  };
+
+  const nextRound = function () {
+    /* Reset */
+    roundCounter++; // todo Round counter ile ilgili problem var.
+
+    console.log("---------------------------------------------");
+    console.log("Yeni round");
+    console.log("---------------------------------------------");
+    console.log("Round:", roundCounter);
+
+    //Reset after Round
+    _numberOfMoves = 0;
+    gameBoard.resetGameBoard();
+  };
+
+  const switchPlayerTurn = function () {
+    activePlayer = activePlayer === x_Player ? o_Player : x_Player;
+  };
+
+  const makeMove = function (row, column) {
+    if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
+      // check if it's a valid move
+      _numberOfMoves++;
+
+      if (_numberOfMoves > 2) checkWinningCondition(_numberOfMoves);
+
+      switchPlayerTurn(); // switch player turn after a move
+    }
+  };
+
+  const checkWinner = function () {
+    const x_PlayerScore = x_Player.getScore();
+    const o_PlayerScore = o_Player.getScore();
+
+    if (roundCounter < 3) {
+      // end round
+      let roundWinner;
+
+      !(_numberOfMoves === 9)
+        ? (roundWinner = activePlayer.name)
+        : (roundWinner = "");
+
+      if (roundWinner === "") {
+        console.log("Raundun kazananı yok, berabere");
+      } else {
+        console.log("Raundun kazananı:", roundWinner);
+      }
+
+      console.log(
+        x_Player.name,
+        ":",
+        x_Player.getScore(),
+        " - ",
+        o_Player.name,
+        ":",
+        o_Player.getScore()
+      );
+
+      nextRound();
+
+      return roundWinner;
+    } else {
+      // end game
+      let gameWinner;
+      if (x_PlayerScore > o_PlayerScore) {
+        gameWinner = x_Player;
+      } else if (x_PlayerScore < o_PlayerScore) {
+        gameWinner = o_Player;
+      } else {
+        gameWinner = "";
+      }
+
+      if (gameWinner === "") {
+        console.log("Oyunun kazananı yok, berabere");
+
+        console.log(
+          x_Player.name,
+          ":",
+          x_Player.getScore(),
+          " - ",
+          o_Player.name,
+          ":",
+          o_Player.getScore()
+        );
+      } else {
+        console.log("Oyunun kazananı:", gameWinner.name);
+
+        console.log(
+          x_Player.name,
+          ":",
+          x_Player.getScore(),
+          " - ",
+          o_Player.name,
+          ":",
+          o_Player.getScore()
+        );
+      }
+
+      return gameWinner;
+    }
+  };
+
+  const checkWinningCondition = function (_numberOfMoves) {
     const isSame = function (array, controlValue) {
       const _isSame = (currentValue) =>
         !(currentValue === "") && currentValue === controlValue;
@@ -67,7 +190,9 @@ const gameController = (function () {
       const firstCell = board[row][0];
 
       if (isSame(board[row], firstCell)) {
-        console.log("Yatayda üçü eşit, kazandınız");
+        console.log("Yatayda üçü eşit...");
+        activePlayer.giveScore();
+        checkWinner();
         return true;
       }
     }
@@ -82,7 +207,9 @@ const gameController = (function () {
       }
 
       if (isSame(verticalArray, firstCell)) {
-        console.log("Dikeyde üçü eşit, kazandınız");
+        console.log("Dikeyde üçü eşit...");
+        activePlayer.giveScore();
+        checkWinner();
         return true;
       }
     }
@@ -103,76 +230,18 @@ const gameController = (function () {
       isSame(firstDiagonalArray, firstDiagonalArray[0]) ||
       isSame(secondDiagonalArray, secondDiagonalArray[0])
     ) {
-      console.log("Çaprazda üçü eşit, kazandınız");
+      console.log("Çaprazda üçü eşit...");
+      activePlayer.giveScore();
+      checkWinner();
       return true;
     }
 
-    if (numberOfMoves === 9) {
-      console.log("Beraberlik");
+    if (_numberOfMoves === 9) {
+      console.log("Eşitlik deseni bulunamadı...");
+      checkWinner();
     }
 
     return false;
-  };
-
-  const switchPlayerTurn = function () {
-    activePlayer = activePlayer === x_Player ? o_Player : x_Player;
-  };
-
-  let _numberOfMoves = 0;
-  const makeMove = function (row, column) {
-    if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
-      // check if it's a valid move
-      _numberOfMoves++;
-
-      if (_numberOfMoves > 2) checkWinningCondition(_numberOfMoves);
-
-      switchPlayerTurn(); // switch player turn after a move
-    }
-  };
-
-  const newGame = function () {
-    // newGame includes all three rounds
-    console.log("Yeni oyun");
-    gameBoard.resetGameBoard();
-
-    x_Player.resetScore();
-    o_Player.resetScore();
-  };
-
-  const nextRound = function () {
-    // After Round
-    console.log("Yeni round");
-    gameBoard.resetGameBoard();
-    
-    x_Player.resetScore();
-    o_Player.resetScore();
-
-    roundCounter++;
-  };
-
-  const endGame = function () {
-
-  };
-
-  const checkWinner = function () {
-    const x_PlayerScore = x_Player.getScore();
-    const o_PlayerScore = o_Player.getScore();
-
-    if (roundCounter < 4) {
-      // last player who makes winning move is the winner
-      activePlayer.giveScore();
-      return activePlayer;
-    } else {
-      let gameWinner;
-      if (x_PlayerScore > o_PlayerScore) {
-        gameWinner = x_Player;
-      } else if (x_PlayerScore < o_PlayerScore) {
-        gameWinner = o_Player;
-      } else {
-        gameWinner = { x_Player, o_Player };
-      }
-      endGame(gameWinner);
-    }
   };
 
   return {
@@ -184,12 +253,12 @@ const gameController = (function () {
 })();
 
 gameController.newGame();
-gameController.makeMove(0, 0); //Horizontal test
-gameController.makeMove(1, 0);
-gameController.makeMove(0, 1);
-gameController.makeMove(1, 1);
-gameController.makeMove(2, 0);
-gameController.makeMove(1, 2);
+// gameController.makeMove(0, 0); //Horizontal test
+// gameController.makeMove(1, 0);
+// gameController.makeMove(0, 1);
+// gameController.makeMove(1, 1);
+// gameController.makeMove(2, 0);
+// gameController.makeMove(1, 2);
 
 // gameController.makeMove(0, 0); //Vertical test
 // gameController.makeMove(0, 1);
@@ -197,8 +266,26 @@ gameController.makeMove(1, 2);
 // gameController.makeMove(1, 2);
 // gameController.makeMove(2, 0);
 
-// gameController.makeMove(0, 0); // diagonal test
-// gameController.makeMove(1, 0),
-// gameController.makeMove(1, 1);
-// gameController.makeMove(2, 1);
-// gameController.makeMove(2, 2);
+gameController.makeMove(0, 0); // diagonal test
+gameController.makeMove(1, 0), gameController.makeMove(1, 1);
+gameController.makeMove(2, 1);
+gameController.makeMove(0, 1);
+gameController.makeMove(0, 2);
+gameController.makeMove(2, 2);
+
+gameController.makeMove(0, 0); //Horizontal test
+gameController.makeMove(1, 0);
+gameController.makeMove(0, 1);
+gameController.makeMove(1, 1);
+gameController.makeMove(2, 0);
+gameController.makeMove(1, 2);
+
+gameController.makeMove(0, 0); // tie test
+gameController.makeMove(1, 0);
+gameController.makeMove(1, 1);
+gameController.makeMove(2, 1);
+gameController.makeMove(0, 1);
+gameController.makeMove(0, 2);
+gameController.makeMove(1, 2);
+gameController.makeMove(2, 2);
+gameController.makeMove(2, 0);
