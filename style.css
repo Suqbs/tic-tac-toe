@@ -39,7 +39,7 @@ video {
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  width: min(100%, 30rem);
+  width: min(100%, 32rem);
 }
 
 .square {

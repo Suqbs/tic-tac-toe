@@ -4,7 +4,7 @@ const gameBoard = (function () {
 
   let gameBoard = Array(_gridSize)
     .fill()
-    .map(() => Array(_gridSize).fill("")); //Create 2D Array
+    .map(() => Array(_gridSize).fill("O")); //Create 2D Array
 
   //Gameboard interaction
   const getGameBoard = () => gameBoard; // no need
@@ -41,6 +41,59 @@ const gameBoard = (function () {
     getGameBoard,
     setGameBoard,
     resetGameBoard,
+  };
+})();
+
+const cacheDOM = (function () {
+  const boardDOM = document.getElementById("board");
+  // console.log(boardDOM.children);
+
+  // for(const index of boardDOM.children)
+  // {
+  //   console.log(index);
+  // }
+
+  // Give coordinates to square elements according to position in gameBoard Array 
+  for (let i = 0, childIndex = 0; i < gameBoard.getGameBoard().length; i++) {
+    for (let j = 0; j < gameBoard.getGameBoard()[i].length; j++, childIndex++) {
+      boardDOM.children[childIndex].dataset.coordinate = `${i},${j}`;
+    }
+  }
+
+  const render = function () {
+    for (const child of boardDOM.children) {
+      if (child.hasChildNodes()) {
+        child.textContent = "";
+      }
+      const board = gameBoard.getGameBoard();
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+      svg.appendChild(use);
+
+      board.forEach((array) => {
+        array.forEach((item) => {
+          if (item === "X") {
+            use.setAttribute("href", "#x-symbol");
+          } else if (item === "O") {
+            use.setAttribute("href", "#o-symbol");
+          }
+        });
+      });
+
+      child.appendChild(svg);
+    }
+  };
+
+  // for (const child of boardDOM.children) {
+  //   // console.log(child);
+
+  //   child.addEventListener("click", () => {
+  //     console.log(child);
+  //   });
+  // }
+
+  return {
+    render,
   };
 })();
 
@@ -98,6 +151,7 @@ const gameController = (function () {
   const makeMove = function (row, column) {
     if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
       // check if it's a valid move
+      cacheDOM.render();
       _numberOfMoves++;
 
       if (_numberOfMoves > 2) checkWinningCondition(_numberOfMoves);
@@ -266,26 +320,26 @@ gameController.newGame();
 // gameController.makeMove(1, 2);
 // gameController.makeMove(2, 0);
 
-gameController.makeMove(0, 0); // diagonal test
-gameController.makeMove(1, 0), gameController.makeMove(1, 1);
-gameController.makeMove(2, 1);
-gameController.makeMove(0, 1);
-gameController.makeMove(0, 2);
-gameController.makeMove(2, 2);
+// gameController.makeMove(0, 0); // diagonal test
+// gameController.makeMove(1, 0), gameController.makeMove(1, 1);
+// gameController.makeMove(2, 1);
+// gameController.makeMove(0, 1);
+// gameController.makeMove(0, 2);
+// gameController.makeMove(2, 2);
 
-gameController.makeMove(0, 0); //Horizontal test
-gameController.makeMove(1, 0);
-gameController.makeMove(0, 1);
-gameController.makeMove(1, 1);
-gameController.makeMove(2, 0);
-gameController.makeMove(1, 2);
+// gameController.makeMove(0, 0); //Horizontal test
+// gameController.makeMove(1, 0);
+// gameController.makeMove(0, 1);
+// gameController.makeMove(1, 1);
+// gameController.makeMove(2, 0);
+// gameController.makeMove(1, 2);
 
-gameController.makeMove(0, 0); // tie test
-gameController.makeMove(1, 0);
-gameController.makeMove(1, 1);
-gameController.makeMove(2, 1);
-gameController.makeMove(0, 1);
-gameController.makeMove(0, 2);
-gameController.makeMove(1, 2);
-gameController.makeMove(2, 2);
-gameController.makeMove(2, 0);
+// gameController.makeMove(0, 0); // tie test
+// gameController.makeMove(1, 0);
+// gameController.makeMove(1, 1);
+// gameController.makeMove(2, 1);
+// gameController.makeMove(0, 1);
+// gameController.makeMove(0, 2);
+// gameController.makeMove(1, 2);
+// gameController.makeMove(2, 2);
+// gameController.makeMove(2, 0);
