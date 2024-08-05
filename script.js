@@ -53,36 +53,42 @@ const cacheDOM = (function () {
   //   console.log(index);
   // }
 
-  // Give coordinates to square elements according to position in gameBoard Array 
+  // Give coordinates to square elements according to position in gameBoard Array
   for (let i = 0, childIndex = 0; i < gameBoard.getGameBoard().length; i++) {
     for (let j = 0; j < gameBoard.getGameBoard()[i].length; j++, childIndex++) {
       boardDOM.children[childIndex].dataset.coordinate = `${i},${j}`;
     }
   }
 
-  const render = function () {
-    for (const child of boardDOM.children) {
-      if (child.hasChildNodes()) {
-        child.textContent = "";
-      }
-      const board = gameBoard.getGameBoard();
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-      svg.appendChild(use);
+  const render = function (row, column) {
+    const coordinate = `${row},${column}`;
+    const child = document.querySelector(`[data-coordinate = ${CSS.escape(coordinate)}]`);
 
-      board.forEach((array) => {
-        array.forEach((item) => {
-          if (item === "X") {
-            use.setAttribute("href", "#x-symbol");
-          } else if (item === "O") {
-            use.setAttribute("href", "#o-symbol");
-          }
-        });
-      });
-
-      child.appendChild(svg);
+    if (child.children.length !== 0) {
+      return;
     }
+
+    const board = gameBoard.getGameBoard();
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    svg.appendChild(use);
+
+    if (child.dataset.coordinate === `${row},${column}`) {
+      if (board[row][column] === "X") {
+        use.setAttribute("href", "#x-symbol");
+      } else if (board[row][column] === "O") {
+        use.setAttribute("href", "#o-symbol");
+      }
+    }
+
+    child.appendChild(svg);
   };
+
+  const reset = function () {
+    for (const child of boardDOM.children) {
+      child.textContent = "";
+    }
+  }
 
   // for (const child of boardDOM.children) {
   //   // console.log(child);
@@ -94,6 +100,7 @@ const cacheDOM = (function () {
 
   return {
     render,
+    reset
   };
 })();
 
@@ -125,6 +132,7 @@ const gameController = (function () {
 
     /* Reset */
     _numberOfMoves = 0;
+    cacheDOM.reset();
     gameBoard.resetGameBoard();
     x_Player.resetScore();
     o_Player.resetScore();
@@ -141,6 +149,7 @@ const gameController = (function () {
 
     //Reset after Round
     _numberOfMoves = 0;
+    cacheDOM.reset();
     gameBoard.resetGameBoard();
   };
 
@@ -149,12 +158,19 @@ const gameController = (function () {
   };
 
   const makeMove = function (row, column) {
+    const isRoundFinished = checkWinningCondition() ? true : false;
+
+    if(isRoundFinished) {
+      console.log("Round bitti, taş koyamazsınız.");
+      return;
+    }
+
     if (gameBoard.setGameBoard(row, column, activePlayer.symbol)) {
       // check if it's a valid move
-      cacheDOM.render();
+      cacheDOM.render(row, column);
       _numberOfMoves++;
 
-      if (_numberOfMoves > 2) checkWinningCondition(_numberOfMoves);
+      
 
       switchPlayerTurn(); // switch player turn after a move
     }
@@ -187,8 +203,6 @@ const gameController = (function () {
         ":",
         o_Player.getScore()
       );
-
-      nextRound();
 
       return roundWinner;
     } else {
@@ -293,6 +307,7 @@ const gameController = (function () {
     if (_numberOfMoves === 9) {
       console.log("Eşitlik deseni bulunamadı...");
       checkWinner();
+      return true;
     }
 
     return false;
@@ -301,6 +316,7 @@ const gameController = (function () {
   return {
     newGame,
     makeMove,
+    nextRound,
     activePlayer,
     checkWinningCondition,
   };
@@ -320,12 +336,12 @@ gameController.newGame();
 // gameController.makeMove(1, 2);
 // gameController.makeMove(2, 0);
 
-// gameController.makeMove(0, 0); // diagonal test
-// gameController.makeMove(1, 0), gameController.makeMove(1, 1);
-// gameController.makeMove(2, 1);
-// gameController.makeMove(0, 1);
-// gameController.makeMove(0, 2);
-// gameController.makeMove(2, 2);
+gameController.makeMove(0, 0); // diagonal test
+gameController.makeMove(1, 0), gameController.makeMove(1, 1);
+gameController.makeMove(2, 1);
+gameController.makeMove(0, 1);
+gameController.makeMove(0, 2);
+gameController.makeMove(2, 2);
 
 // gameController.makeMove(0, 0); //Horizontal test
 // gameController.makeMove(1, 0);
