@@ -119,6 +119,7 @@ const gameController = (function () {
   const o_Player = createPlayer("Buse", "O");
   let roundCounter = 1;
   let _numberOfMoves = 0;
+  let isRoundFinished = false;
 
   let activePlayer = x_Player;
 
@@ -132,6 +133,7 @@ const gameController = (function () {
 
     /* Reset */
     _numberOfMoves = 0;
+    isRoundFinished = false;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
     x_Player.resetScore();
@@ -148,6 +150,7 @@ const gameController = (function () {
     console.log("Round:", roundCounter);
 
     //Reset after Round
+    isRoundFinished = false;
     _numberOfMoves = 0;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
@@ -158,8 +161,6 @@ const gameController = (function () {
   };
 
   const makeMove = function (row, column) {
-    const isRoundFinished = checkWinningCondition() ? true : false;
-
     if(isRoundFinished) {
       console.log("Round bitti, taş koyamazsınız.");
       return;
@@ -170,8 +171,10 @@ const gameController = (function () {
       cacheDOM.render(row, column);
       _numberOfMoves++;
 
+      if(_numberOfMoves > 2 && checkWinningCondition()) {
+        isRoundFinished = true;
+      }
       
-
       switchPlayerTurn(); // switch player turn after a move
     }
   };
@@ -246,7 +249,7 @@ const gameController = (function () {
     }
   };
 
-  const checkWinningCondition = function (_numberOfMoves) {
+  const checkWinningCondition = function () {
     const isSame = function (array, controlValue) {
       const _isSame = (currentValue) =>
         !(currentValue === "") && currentValue === controlValue;
