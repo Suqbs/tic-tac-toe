@@ -4,7 +4,7 @@ const gameBoard = (function () {
 
   let gameBoard = Array(_gridSize)
     .fill()
-    .map(() => Array(_gridSize).fill("O")); //Create 2D Array
+    .map(() => Array(_gridSize).fill("")); //Create 2D Array
 
   //Gameboard interaction
   const getGameBoard = () => gameBoard; // no need
@@ -32,75 +32,15 @@ const gameBoard = (function () {
     return false;
   };
 
-  const resetGameBoard = () =>
-    gameBoard.forEach((arr, index) => {
-      gameBoard[index] = arr.map((item) => (item = ""));
+  const resetGameBoard = () => {
+    gameBoard.forEach((arr) => {
+      arr.fill("");
     });
-
+  };
   return {
     getGameBoard,
     setGameBoard,
     resetGameBoard,
-  };
-})();
-
-const cacheDOM = (function () {
-  const boardDOM = document.getElementById("board");
-  // console.log(boardDOM.children);
-
-  // for(const index of boardDOM.children)
-  // {
-  //   console.log(index);
-  // }
-
-  // Give coordinates to square elements according to position in gameBoard Array
-  for (let i = 0, childIndex = 0; i < gameBoard.getGameBoard().length; i++) {
-    for (let j = 0; j < gameBoard.getGameBoard()[i].length; j++, childIndex++) {
-      boardDOM.children[childIndex].dataset.coordinate = `${i},${j}`;
-    }
-  }
-
-  const render = function (row, column) {
-    const coordinate = `${row},${column}`;
-    const child = document.querySelector(`[data-coordinate = ${CSS.escape(coordinate)}]`);
-
-    if (child.children.length !== 0) {
-      return;
-    }
-
-    const board = gameBoard.getGameBoard();
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-    svg.appendChild(use);
-
-    if (child.dataset.coordinate === `${row},${column}`) {
-      if (board[row][column] === "X") {
-        use.setAttribute("href", "#x-symbol");
-      } else if (board[row][column] === "O") {
-        use.setAttribute("href", "#o-symbol");
-      }
-    }
-
-    child.appendChild(svg);
-  };
-
-  const reset = function () {
-    for (const child of boardDOM.children) {
-      child.textContent = "";
-    }
-  }
-
-  // for (const child of boardDOM.children) {
-  //   // console.log(child);
-
-  //   child.addEventListener("click", () => {
-  //     console.log(child);
-  //   });
-  // }
-
-  return {
-    render,
-    reset
   };
 })();
 
@@ -161,7 +101,7 @@ const gameController = (function () {
   };
 
   const makeMove = function (row, column) {
-    if(isRoundFinished) {
+    if (isRoundFinished) {
       console.log("Round bitti, taş koyamazsınız.");
       return;
     }
@@ -171,10 +111,10 @@ const gameController = (function () {
       cacheDOM.render(row, column);
       _numberOfMoves++;
 
-      if(_numberOfMoves > 2 && checkWinningCondition()) {
+      if (_numberOfMoves > 2 && checkWinningCondition()) {
         isRoundFinished = true;
       }
-      
+
       switchPlayerTurn(); // switch player turn after a move
     }
   };
@@ -325,19 +265,57 @@ const gameController = (function () {
   };
 })();
 
-gameController.newGame();
-// gameController.makeMove(0, 0); //Horizontal test
-// gameController.makeMove(1, 0);
-// gameController.makeMove(0, 1);
-// gameController.makeMove(1, 1);
-// gameController.makeMove(2, 0);
-// gameController.makeMove(1, 2);
+const cacheDOM = (function () {
+  const boardDOM = document.getElementById("board");
+  const squares = boardDOM.children;
+  console.log(squares);
 
-// gameController.makeMove(0, 0); //Vertical test
-// gameController.makeMove(0, 1);
-// gameController.makeMove(1, 0);
-// gameController.makeMove(1, 2);
-// gameController.makeMove(2, 0);
+  // Give coordinates to square elements according to position in gameBoard Array
+  for (let i = 0, childIndex = 0; i < gameBoard.getGameBoard().length; i++) {
+    for (let j = 0; j < gameBoard.getGameBoard()[i].length; j++, childIndex++) {
+      boardDOM.children[childIndex].dataset.coordinate = `${i},${j}`;
+    }
+  }
+
+  const render = function (row, column) {
+    const coordinate = `${row},${column}`;
+    const child = document.querySelector(
+      `[data-coordinate = ${CSS.escape(coordinate)}]`
+    );
+
+    if (child.children.length !== 0) {
+      return;
+    }
+
+    const board = gameBoard.getGameBoard();
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    svg.appendChild(use);
+
+    if (child.dataset.coordinate === `${row},${column}`) {
+      if (board[row][column] === "X") {
+        use.setAttribute("href", "#x-symbol");
+      } else if (board[row][column] === "O") {
+        use.setAttribute("href", "#o-symbol");
+      }
+    }
+
+    child.appendChild(svg);
+  };
+
+  const reset = function () {
+    for (const child of squares) {
+      child.textContent = "";
+    }
+  };
+
+  return {
+    render,
+    reset,
+  };
+})();
+
+gameController.newGame();
 
 gameController.makeMove(0, 0); // diagonal test
 gameController.makeMove(1, 0), gameController.makeMove(1, 1);
@@ -346,12 +324,16 @@ gameController.makeMove(0, 1);
 gameController.makeMove(0, 2);
 gameController.makeMove(2, 2);
 
+// gameController.nextRound();
+
 // gameController.makeMove(0, 0); //Horizontal test
 // gameController.makeMove(1, 0);
 // gameController.makeMove(0, 1);
 // gameController.makeMove(1, 1);
 // gameController.makeMove(2, 0);
 // gameController.makeMove(1, 2);
+
+// gameController.nextRound();
 
 // gameController.makeMove(0, 0); // tie test
 // gameController.makeMove(1, 0);
