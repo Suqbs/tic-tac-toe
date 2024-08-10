@@ -202,6 +202,7 @@ const gameController = (function () {
 
       if (isSame(board[row], firstCell)) {
         console.log("Yatayda üçü eşit...");
+        
         activePlayer.giveScore();
         checkWinner();
         return true;
@@ -285,7 +286,6 @@ const cacheDOM = (function () {
       const column = splitCoordinates[1];
 
       gameController.makeMove(row, column);
-      // gameController.makeMove();
     });
   }
 

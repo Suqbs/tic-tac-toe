@@ -55,15 +55,23 @@ video {
 .square:nth-child(4),
 .square:nth-child(5),
 .square:nth-child(6) {
-    border-top: var(--border);
-    border-bottom: var(--border);
+  border-top: var(--border);
+  border-bottom: var(--border);
 }
 
 .square svg {
-  /* transition: transform 0.5s;
-    transform-origin: center; */
+  /* animation: scale 2s; */
+  transform-origin: center;
 }
 
-.square svg:hover {
-  /* transform: scale(1.2); */
+@keyframes scale {
+  0% {
+    transform: scale(1.0);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.0);
+  }
 }
