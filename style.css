@@ -38,6 +38,8 @@ video {
 }
 
 .board {
+  position: relative;
+
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: min(100%, 32rem);
@@ -47,6 +49,17 @@ video {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(3.5px);
   -webkit-backdrop-filter: blur(3.5px);
+}
+
+.board::after {
+  position: absolute;
+  content: "";
+  right: -150px;
+  bottom: -150px;
+  width: 150px;
+  height: 150px;
+  border-radius: 0% 100%;
+  background-image: linear-gradient(to right, #59981A,#3D550C);
 }
 
 .square {
