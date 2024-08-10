@@ -260,9 +260,9 @@ const gameController = (function () {
       cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
       return true;
     } else if (isSame(secondDiagonalArray, secondDiagonalArray[0])) {
-      console.log("Çaprazda üçü eşit...");
+      console.log("Çaprazda üçü eşit...second");
 
-      winnerCoordinates.push("0,0", "1,1", "2,2");
+      winnerCoordinates.push("2,0", "1,1", "0,2");
 
       activePlayer.giveScore();
       checkWinner();

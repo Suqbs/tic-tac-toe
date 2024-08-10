@@ -31,10 +31,19 @@ video {
   color: white;
 }
 
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #81B622;
+}
+
 .wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-basis: 100%;
+  /*flex-basis prevents item from being shrinked*/
 }
 
 .board {
@@ -45,10 +54,12 @@ video {
   width: min(100%, 32rem);
 
   background: rgba(255, 255, 255, 0.17);
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(3.5px);
   -webkit-backdrop-filter: blur(3.5px);
+
+  border: 3px solid #53340a8f;
 }
 
 .board::after {
@@ -100,8 +111,4 @@ video {
   100% {
     transform: scale(1);
   }
-}
-
-body {
-  background-color: #81B622;
 }
