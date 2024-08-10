@@ -196,15 +196,22 @@ const gameController = (function () {
       return array.every(_isSame);
     };
 
+    const winnerCoordinates = [];
+
     // check horizontal equality
     for (let row = 0; row < board.length; row++) {
       const firstCell = board[row][0];
 
       if (isSame(board[row], firstCell)) {
         console.log("Yatayda üçü eşit...");
-        
+
+        winnerCoordinates.push(`${row},0`, `${row},1`, `${row},2`);
+        console.log(winnerCoordinates);
+
         activePlayer.giveScore();
         checkWinner();
+        
+        cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
         return true;
       }
     }
@@ -220,8 +227,12 @@ const gameController = (function () {
 
       if (isSame(verticalArray, firstCell)) {
         console.log("Dikeyde üçü eşit...");
+        winnerCoordinates.push(`0,${column}`, `1,${column}`, `2,${column}`);
+
         activePlayer.giveScore();
         checkWinner();
+
+        cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
         return true;
       }
     }
@@ -238,13 +249,25 @@ const gameController = (function () {
       cell = board[reverseIndex][i];
       secondDiagonalArray.push(cell);
     }
-    if (
-      isSame(firstDiagonalArray, firstDiagonalArray[0]) ||
-      isSame(secondDiagonalArray, secondDiagonalArray[0])
-    ) {
+    if (isSame(firstDiagonalArray, firstDiagonalArray[0])) {
       console.log("Çaprazda üçü eşit...");
+
+      winnerCoordinates.push("2,2", "1,1", "0,0");
+
       activePlayer.giveScore();
       checkWinner();
+
+      cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
+      return true;
+    } else if (isSame(secondDiagonalArray, secondDiagonalArray[0])) {
+      console.log("Çaprazda üçü eşit...");
+
+      winnerCoordinates.push("0,0", "1,1", "2,2");
+
+      activePlayer.giveScore();
+      checkWinner();
+
+      cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
       return true;
     }
 
@@ -280,7 +303,7 @@ const cacheDOM = (function () {
 
   for (const square of squares) {
     square.addEventListener("click", (e) => {
-      const splitCoordinates = square.dataset.coordinate.split(',');
+      const splitCoordinates = square.dataset.coordinate.split(",");
 
       const row = splitCoordinates[0];
       const column = splitCoordinates[1];
@@ -321,9 +344,21 @@ const cacheDOM = (function () {
     }
   };
 
+  const addAnimationToWinnerSquares = function(coordinatesArr) {
+    coordinatesArr.forEach(coordinates => {
+      for (const square of squares) {
+        if(square.dataset.coordinate === coordinates)
+        {
+          square.firstChild.classList.add("scale-animation");
+        }
+      }
+    });
+  } 
+
   return {
     render,
     reset,
+    addAnimationToWinnerSquares
   };
 })();
 
