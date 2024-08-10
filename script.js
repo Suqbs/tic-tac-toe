@@ -7,7 +7,7 @@ const gameBoard = (function () {
     .map(() => Array(_gridSize).fill("")); //Create 2D Array
 
   //Gameboard interaction
-  const getGameBoard = () => gameBoard; // no need
+  const getGameBoard = () => gameBoard;
 
   const setGameBoard = function (row, column, symbol) {
     if (
@@ -277,6 +277,18 @@ const cacheDOM = (function () {
     }
   }
 
+  for (const square of squares) {
+    square.addEventListener("click", (e) => {
+      const splitCoordinates = square.dataset.coordinate.split(',');
+
+      const row = splitCoordinates[0];
+      const column = splitCoordinates[1];
+
+      gameController.makeMove(row, column);
+      // gameController.makeMove();
+    });
+  }
+
   const render = function (row, column) {
     const coordinate = `${row},${column}`;
     const child = document.querySelector(
@@ -316,31 +328,3 @@ const cacheDOM = (function () {
 })();
 
 gameController.newGame();
-
-gameController.makeMove(0, 0); // diagonal test
-gameController.makeMove(1, 0), gameController.makeMove(1, 1);
-gameController.makeMove(2, 1);
-gameController.makeMove(0, 1);
-gameController.makeMove(0, 2);
-gameController.makeMove(2, 2);
-
-// gameController.nextRound();
-
-// gameController.makeMove(0, 0); //Horizontal test
-// gameController.makeMove(1, 0);
-// gameController.makeMove(0, 1);
-// gameController.makeMove(1, 1);
-// gameController.makeMove(2, 0);
-// gameController.makeMove(1, 2);
-
-// gameController.nextRound();
-
-// gameController.makeMove(0, 0); // tie test
-// gameController.makeMove(1, 0);
-// gameController.makeMove(1, 1);
-// gameController.makeMove(2, 1);
-// gameController.makeMove(0, 1);
-// gameController.makeMove(0, 2);
-// gameController.makeMove(1, 2);
-// gameController.makeMove(2, 2);
-// gameController.makeMove(2, 0);
