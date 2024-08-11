@@ -126,7 +126,7 @@ const gameController = (function () {
     }
   };
 
-  const checkWinner = function () {
+  const checkWinner = function (isTie = false) {
     const x_PlayerScore = x_Player.getScore();
     const o_PlayerScore = o_Player.getScore();
 
@@ -134,11 +134,9 @@ const gameController = (function () {
       // end round
       let roundWinner;
 
-      !(_numberOfMoves === 9)
-        ? (roundWinner = activePlayer.name)
-        : (roundWinner = "");
+      roundWinner = activePlayer.name;
 
-      if (roundWinner === "") {
+      if (isTie) {
         console.log("Tie");
         cacheDOM.showResults(x_Player, o_Player, "TIE", roundCounter);
         cacheDOM.winnerDialog(true);
@@ -176,7 +174,7 @@ const gameController = (function () {
       }
 
       if (gameWinner === "") {
-        console.log("NO ROUND WINNER, TIE");
+        console.log("NO GAME WINNER, TIE");
         cacheDOM.showResults(x_Player, o_Player, "NO WINNER IN THE GAME, TIE", roundCounter);
         cacheDOM.winnerDialog(false);
 
@@ -291,8 +289,8 @@ const gameController = (function () {
     }
 
     if (_numberOfMoves === 9) {
-      console.log("Eşitlik deseni bulunamadı...");
-      checkWinner();
+      console.log("No equality pattern...");
+      checkWinner(true);
       return true;
     }
 
