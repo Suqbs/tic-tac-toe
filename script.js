@@ -177,7 +177,12 @@ const gameController = (function () {
 
       if (gameWinner === "") {
         console.log("NO GAME WINNER, TIE");
-        cacheDOM.showResults(x_Player, o_Player, "NO WINNER IN THE GAME, TIE", roundCounter);
+        cacheDOM.showResults(
+          x_Player,
+          o_Player,
+          "NO WINNER IN THE GAME, TIE",
+          roundCounter
+        );
         cacheDOM.winnerDialog(false);
 
         console.log(
@@ -191,7 +196,12 @@ const gameController = (function () {
         );
       } else {
         console.log("WINNER OF THE GAME:", gameWinner.name);
-        cacheDOM.showResults(x_Player, o_Player, `WINNER OF THE GAME IS ${gameWinner.name}`, roundCounter);
+        cacheDOM.showResults(
+          x_Player,
+          o_Player,
+          `WINNER OF THE GAME IS ${gameWinner.name}`,
+          roundCounter
+        );
         cacheDOM.winnerDialog(false);
         console.log(
           x_Player.name,
@@ -350,6 +360,13 @@ const cacheDOM = (function () {
     gameController.newGame();
   });
 
+  const preventCancel = function (e) {
+    console.log(e);
+    e.preventDefault();
+  };
+
+  winnerDialogDOM.addEventListener("cancel", preventCancel);
+
   const render = function (row, column) {
     const coordinate = `${row},${column}`;
     const child = document.querySelector(
@@ -407,10 +424,6 @@ const cacheDOM = (function () {
       nextRoundButton.setAttribute("id", "next-round-button");
       winnerDialogDOM.appendChild(nextRoundButton);
 
-      winnerDialogDOM.addEventListener("cancel", (e) => {
-        e.preventDefault();
-      });
-
       nextRoundButton.addEventListener("click", () => {
         winnerDialogDOM.close();
         winnerDialogDOM.removeChild(nextRoundButton);
@@ -421,9 +434,12 @@ const cacheDOM = (function () {
     } else {
       winnerDialogDOM.showModal();
 
-      winnerDialogDOM.addEventListener("click", () => {
+      const closeDialog = () => {
         winnerDialogDOM.close();
-      });
+        winnerDialogDOM.removeEventListener("click", closeDialog);
+      }
+
+      winnerDialogDOM.addEventListener("click", closeDialog);
     }
   };
 
