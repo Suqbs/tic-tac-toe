@@ -73,6 +73,7 @@ const gameController = (function () {
 
     /* Reset */
     _numberOfMoves = 0;
+    roundCounter = 1;
     isRoundFinished = false;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
