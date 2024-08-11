@@ -28,7 +28,7 @@ const gameBoard = (function () {
       return true;
     }
 
-    console.log("Çalışmadı");
+    console.log("Does not work");
     return false;
   };
 
@@ -67,7 +67,7 @@ const gameController = (function () {
     // newGame includes all three rounds
 
     console.log("---------------------------------------------");
-    console.log("Yeni oyun");
+    console.log("New Game");
     console.log("---------------------------------------------");
     console.log("Round:", roundCounter);
 
@@ -78,6 +78,9 @@ const gameController = (function () {
     gameBoard.resetGameBoard();
     x_Player.resetScore();
     o_Player.resetScore();
+
+    // Reset Results
+    cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
   };
 
   const nextRound = function () {
@@ -85,7 +88,7 @@ const gameController = (function () {
     roundCounter++; // todo Round counter ile ilgili problem var.
 
     console.log("---------------------------------------------");
-    console.log("Yeni round");
+    console.log("New Round");
     console.log("---------------------------------------------");
     console.log("Round:", roundCounter);
 
@@ -94,6 +97,9 @@ const gameController = (function () {
     _numberOfMoves = 0;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
+
+    // Reset Results
+    cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
   };
 
   const switchPlayerTurn = function () {
@@ -102,7 +108,7 @@ const gameController = (function () {
 
   const makeMove = function (row, column) {
     if (isRoundFinished) {
-      console.log("Round bitti, taş koyamazsınız.");
+      console.log("Round has finished, you cannot make a move.");
       return;
     }
 
@@ -132,9 +138,18 @@ const gameController = (function () {
         : (roundWinner = "");
 
       if (roundWinner === "") {
-        console.log("Raundun kazananı yok, berabere");
+        console.log("Tie");
+        cacheDOM.showResults(x_Player, o_Player, "TIE", roundCounter);
+        cacheDOM.winnerDialog(true);
       } else {
-        console.log("Raundun kazananı:", roundWinner);
+        console.log("Round Winner:", roundWinner);
+        cacheDOM.showResults(
+          x_Player,
+          o_Player,
+          `${roundWinner} WINS`,
+          roundCounter
+        );
+        cacheDOM.winnerDialog(true);
       }
 
       console.log(
@@ -160,7 +175,9 @@ const gameController = (function () {
       }
 
       if (gameWinner === "") {
-        console.log("Oyunun kazananı yok, berabere");
+        console.log("NO ROUND WINNER, TIE");
+        cacheDOM.showResults(x_Player, o_Player, "NO WINNER IN THE GAME, TIE", roundCounter);
+        cacheDOM.winnerDialog(false);
 
         console.log(
           x_Player.name,
@@ -172,8 +189,9 @@ const gameController = (function () {
           o_Player.getScore()
         );
       } else {
-        console.log("Oyunun kazananı:", gameWinner.name);
-
+        console.log("WINNER OF THE GAME:", gameWinner.name);
+        cacheDOM.showResults(x_Player, o_Player, `WINNER OF THE GAME IS ${gameWinner.name}`, roundCounter);
+        cacheDOM.winnerDialog(false);
         console.log(
           x_Player.name,
           ":",
@@ -203,14 +221,14 @@ const gameController = (function () {
       const firstCell = board[row][0];
 
       if (isSame(board[row], firstCell)) {
-        console.log("Yatayda üçü eşit...");
+        console.log("Horizontal equality...");
 
         winnerCoordinates.push(`${row},0`, `${row},1`, `${row},2`);
         console.log(winnerCoordinates);
 
         activePlayer.giveScore();
         checkWinner();
-        
+
         cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
         return true;
       }
@@ -226,7 +244,7 @@ const gameController = (function () {
       }
 
       if (isSame(verticalArray, firstCell)) {
-        console.log("Dikeyde üçü eşit...");
+        console.log("Vertical equality...");
         winnerCoordinates.push(`0,${column}`, `1,${column}`, `2,${column}`);
 
         activePlayer.giveScore();
@@ -250,7 +268,7 @@ const gameController = (function () {
       secondDiagonalArray.push(cell);
     }
     if (isSame(firstDiagonalArray, firstDiagonalArray[0])) {
-      console.log("Çaprazda üçü eşit...");
+      console.log("Diagonal equality...");
 
       winnerCoordinates.push("2,2", "1,1", "0,0");
 
@@ -260,7 +278,7 @@ const gameController = (function () {
       cacheDOM.addAnimationToWinnerSquares(winnerCoordinates);
       return true;
     } else if (isSame(secondDiagonalArray, secondDiagonalArray[0])) {
-      console.log("Çaprazda üçü eşit...second");
+      console.log("Diagonal equality...");
 
       winnerCoordinates.push("2,0", "1,1", "0,2");
 
@@ -292,6 +310,17 @@ const gameController = (function () {
 const cacheDOM = (function () {
   const boardDOM = document.getElementById("board");
   const squares = boardDOM.children;
+
+  const x_PlayerDOM = document.getElementById("x-player");
+  const o_PlayerDOM = document.getElementById("o-player");
+  const roundDOM = document.getElementById("round");
+
+  const changeNameDOM = document.getElementById("change-name");
+  const newGameDOM = document.getElementById("new-game");
+
+  const winnerDialogDOM = document.getElementById("winner-dialog");
+  const resultDOM = document.getElementById("result");
+
   console.log(squares);
 
   // Give coordinates to square elements according to position in gameBoard Array
@@ -311,6 +340,14 @@ const cacheDOM = (function () {
       gameController.makeMove(row, column);
     });
   }
+
+  // nextRoundDOM.addEventListener("click", () => {
+  //   gameController.nextRound();
+  // });
+
+  newGameDOM.addEventListener("click", () => {
+    gameController.newGame();
+  });
 
   const render = function (row, column) {
     const coordinate = `${row},${column}`;
@@ -344,21 +381,57 @@ const cacheDOM = (function () {
     }
   };
 
-  const addAnimationToWinnerSquares = function(coordinatesArr) {
-    coordinatesArr.forEach(coordinates => {
+  const addAnimationToWinnerSquares = function (coordinatesArr) {
+    coordinatesArr.forEach((coordinates) => {
       for (const square of squares) {
-        if(square.dataset.coordinate === coordinates)
-        {
+        if (square.dataset.coordinate === coordinates) {
           square.firstChild.classList.add("scale-animation");
         }
       }
     });
-  } 
+  };
+
+  const showResults = function (x_Player, o_Player, result, roundCounter) {
+    x_PlayerDOM.textContent = `${x_Player.name}: ${x_Player.getScore()}`;
+    o_PlayerDOM.textContent = `${o_Player.name}: ${o_Player.getScore()}`;
+
+    resultDOM.textContent = result;
+    roundDOM.textContent = roundCounter;
+  };
+
+  const winnerDialog = function (isRoundWin) {
+    if (isRoundWin) {
+      const nextRoundButton = document.createElement("button");
+      nextRoundButton.textContent = "Next Round";
+      nextRoundButton.setAttribute("id", "next-round-button");
+      winnerDialogDOM.appendChild(nextRoundButton);
+
+      nextRoundButton.addEventListener("cancel", (e) => {
+        e.preventDefault();
+      });
+
+      nextRoundButton.addEventListener("click", () => {
+        winnerDialogDOM.close();
+        winnerDialogDOM.removeChild(nextRoundButton);
+        gameController.nextRound();
+      });
+
+      winnerDialogDOM.showModal();
+    } else {
+      winnerDialogDOM.showModal();
+
+      winnerDialogDOM.addEventListener("click", () => {
+        winnerDialogDOM.close();
+      });
+    }
+  };
 
   return {
     render,
     reset,
-    addAnimationToWinnerSquares
+    addAnimationToWinnerSquares,
+    showResults,
+    winnerDialog,
   };
 })();
 

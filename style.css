@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Pinewood;
+  src: url(fonts/Pinewood.ttf);
+}
+
 /* CSS RESET */
 *,
 *::before,
@@ -13,6 +18,8 @@
 
 body {
   min-height: 100svh;
+  font-family: Pinewood;
+  color: black;
 }
 
 img,
@@ -28,7 +35,24 @@ video {
   width: 100%;
   height: 100%;
   padding: 10%;
-  color: white;
+}
+
+button {
+  background-color: #ffbc03;
+  border: none;
+  color: black;
+  border-radius: 100%;
+  font-size: 2.2rem;
+  outline: none;
+  border: 1px solid transparent;
+}
+
+button:hover, button:focus {
+  background-color: #ffd45f;
+}
+
+button:focus {
+  border: 1px solid black;
 }
 
 body {
@@ -40,9 +64,11 @@ body {
 
 .wrapper {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-basis: 100%;
+  gap: 2rem;
   /*flex-basis prevents item from being shrinked*/
 }
 
@@ -110,4 +136,39 @@ body {
   100% {
     transform: scale(1);
   }
+}
+
+#round {
+  font-size: 3rem;
+  background-color: #FAD02C;
+  padding: 0.5rem 2rem;
+  border-radius: 5px;
+  border: 2px solid black;
+}
+
+.players {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  font-size: 3rem;
+}
+
+.wrapper .buttons {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  column-gap: 3rem;
+  row-gap: 0.7rem;
+}
+
+#winner-dialog {
+  background-color: #F8EDED;
+}
+
+#result {
+  font-size: 1.7rem;
 }

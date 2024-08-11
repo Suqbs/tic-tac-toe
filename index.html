@@ -9,6 +9,11 @@
   </head>
   <body>
     <div class="wrapper">
+      <p id="round">round</p>
+      <div class="players">
+        <p id="x-player">x-player</p>
+        <p id="o-player">o-player</p>
+      </div>
       <div id="board" class="board">
         <div class="square">
           <!-- <svg><use href="#o-symbol"></use></svg> -->
@@ -38,10 +43,14 @@
           <!-- <svg><use href="#o-symbol"></use></svg> -->
         </div>
       </div>
+      <div class="buttons">
+        <button id="change-name">Change Name</button>
+        <button id="new-game">New Game</button>
+      </div>
     </div>
 
     <!--SVG SYMBOLS START HERE-->
-    <svg style="display: none;">
+    <svg style="display: none">
       <symbol
         id="o-symbol"
         class="symbols o-symbol"
@@ -81,5 +90,10 @@
       </symbol>
     </svg>
     <!--SVG SYMBOLS END HERE-->
+
+    <!--DIALOGS STARTS HERE-->
+    <dialog id="winner-dialog">
+      <p id="result"></p>
+    </dialog>
   </body>
 </html>
