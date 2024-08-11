@@ -407,7 +407,7 @@ const cacheDOM = (function () {
       nextRoundButton.setAttribute("id", "next-round-button");
       winnerDialogDOM.appendChild(nextRoundButton);
 
-      nextRoundButton.addEventListener("cancel", (e) => {
+      winnerDialogDOM.addEventListener("cancel", (e) => {
         e.preventDefault();
       });
 
