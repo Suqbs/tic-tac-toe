@@ -75,6 +75,7 @@ const gameController = (function () {
     _numberOfMoves = 0;
     roundCounter = 1;
     isRoundFinished = false;
+    activePlayer = x_Player;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
     x_Player.resetScore();
@@ -96,6 +97,7 @@ const gameController = (function () {
     //Reset after Round
     isRoundFinished = false;
     _numberOfMoves = 0;
+    activePlayer = x_Player;
     cacheDOM.reset();
     gameBoard.resetGameBoard();
 
