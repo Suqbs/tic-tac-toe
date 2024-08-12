@@ -168,6 +168,7 @@ body {
 #winner-dialog {
   background-color: #F8EDED;
   border-radius: 5px;
+  text-align: center;
 }
 
 #result {
