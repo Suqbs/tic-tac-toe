@@ -158,14 +158,14 @@ body {
 .wrapper .buttons {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
   justify-content: center;
   align-items: center;
   column-gap: 3rem;
   row-gap: 0.7rem;
 }
 
-#winner-dialog {
+dialog {
   background-color: #F8EDED;
   border-radius: 5px;
   text-align: center;
