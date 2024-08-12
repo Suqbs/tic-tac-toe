@@ -55,8 +55,8 @@ const createPlayer = function (name, symbol) {
 
 const gameController = (function () {
   const board = gameBoard.getGameBoard();
-  const x_Player = createPlayer("Furkan", "X");
-  const o_Player = createPlayer("Buse", "O");
+  const x_Player = createPlayer("Player X", "X");
+  const o_Player = createPlayer("Player O", "O");
   let roundCounter = 1;
   let _numberOfMoves = 0;
   let isRoundFinished = false;
@@ -64,6 +64,9 @@ const gameController = (function () {
   let activePlayer = x_Player;
 
   const getActivePlayer = () => activePlayer;
+  const getPlayers = () => {
+    return { x_Player, o_Player };
+  };
   const getRoundCounter = () => roundCounter;
 
   const newGame = function () {
@@ -149,11 +152,7 @@ const gameController = (function () {
         cacheDOM.winnerDialog(true);
       } else {
         console.log("Round Winner:", roundWinner);
-        cacheDOM.showResults(
-          x_Player,
-          o_Player,
-          `${roundWinner} WINS`
-        );
+        cacheDOM.showResults(x_Player, o_Player, `${roundWinner} WINS`);
         cacheDOM.winnerDialog(true);
       }
 
@@ -181,11 +180,7 @@ const gameController = (function () {
 
       if (gameWinner === "") {
         console.log("NO GAME WINNER, TIE");
-        cacheDOM.showResults(
-          x_Player,
-          o_Player,
-          "NO WINNER IN THE GAME, TIE"
-        );
+        cacheDOM.showResults(x_Player, o_Player, "NO WINNER IN THE GAME, TIE");
         cacheDOM.winnerDialog(false);
 
         console.log(
@@ -316,6 +311,7 @@ const gameController = (function () {
     makeMove,
     nextRound,
     getActivePlayer,
+    getPlayers,
     getRoundCounter,
     checkWinningCondition,
   };
@@ -332,8 +328,15 @@ const cacheDOM = (function () {
   const newGameDOM = document.getElementById("new-game");
 
   const winnerDialogDOM = document.getElementById("winner-dialog");
+  const nameDialogDOM = document.getElementById("name-dialog");
   const turnDOM = document.getElementById("turn");
   const resultDOM = document.getElementById("result");
+  const dialogChangeNameDOM = document.getElementById("dialog-change-name");
+
+  const xName = document.getElementById("x-name");
+  const oName = document.getElementById("o-name");
+  console.log(xName);
+  console.log(oName);
 
   console.log(squares);
 
@@ -364,7 +367,23 @@ const cacheDOM = (function () {
     e.preventDefault();
   };
 
+  const changeName = function () {
+    const { x_Player, o_Player } = gameController.getPlayers();
+    x_Player.name = xName.value;
+    o_Player.name = oName.value;
+    showResults(x_Player, o_Player, "");
+    console.log(x_Player);
+    console.log(o_Player);
+    xName.value = "";
+    oName.value = "";
+  };
+
   winnerDialogDOM.addEventListener("cancel", preventCancel);
+  changeNameDOM.addEventListener("click", () => {
+    nameDialogDOM.showModal();
+  });
+
+  dialogChangeNameDOM.addEventListener("click", changeName);
 
   const render = function (row, column) {
     const coordinate = `${row},${column}`;
