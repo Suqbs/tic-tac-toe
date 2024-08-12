@@ -63,6 +63,8 @@ const gameController = (function () {
 
   let activePlayer = x_Player;
 
+  const getActivePlayer = () => activePlayer;
+
   const newGame = function () {
     // newGame includes all three rounds
 
@@ -122,9 +124,11 @@ const gameController = (function () {
 
       if (_numberOfMoves > 2 && checkWinningCondition()) {
         isRoundFinished = true;
+        return;
       }
 
       switchPlayerTurn(); // switch player turn after a move
+      cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
     }
   };
 
@@ -313,7 +317,7 @@ const gameController = (function () {
     newGame,
     makeMove,
     nextRound,
-    activePlayer,
+    getActivePlayer,
     checkWinningCondition,
   };
 })();
@@ -414,7 +418,9 @@ const cacheDOM = (function () {
     o_PlayerDOM.textContent = `${o_Player.name}: ${o_Player.getScore()}`;
 
     resultDOM.textContent = result;
-    roundDOM.textContent = roundCounter;
+    roundDOM.textContent = `${roundCounter} - ${
+      gameController.getActivePlayer().symbol
+    }`;
   };
 
   const winnerDialog = function (isRoundWin) {
@@ -437,7 +443,7 @@ const cacheDOM = (function () {
       const closeDialog = () => {
         winnerDialogDOM.close();
         winnerDialogDOM.removeEventListener("click", closeDialog);
-      }
+      };
 
       winnerDialogDOM.addEventListener("click", closeDialog);
     }
