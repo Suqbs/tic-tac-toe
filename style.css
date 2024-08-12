@@ -37,7 +37,8 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #81b622;
-  font-family: Pinewood, Georgia, 'Times New Roman', Times, serif;
+  font-family: Pinewood, Garamond, serif;
+  font-family: serif;
   color: black;
 }
 
@@ -63,7 +64,7 @@ button:focus {
 }
 
 button:focus {
-  border: 2px solid black;
+  border: 2px solid rgb(77, 77, 77);
 }
 
 input {
