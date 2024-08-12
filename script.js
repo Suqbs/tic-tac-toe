@@ -232,7 +232,6 @@ const gameController = (function () {
         console.log("Horizontal equality...");
 
         winnerCoordinates.push(`${row},0`, `${row},1`, `${row},2`);
-        console.log(winnerCoordinates);
 
         activePlayer.giveScore();
         checkWinner();
@@ -335,10 +334,6 @@ const cacheDOM = (function () {
 
   const xName = document.getElementById("x-name");
   const oName = document.getElementById("o-name");
-  console.log(xName);
-  console.log(oName);
-
-  console.log(squares);
 
   // Give coordinates to square elements according to position in gameBoard Array
   for (let i = 0, childIndex = 0; i < gameBoard.getGameBoard().length; i++) {
@@ -363,7 +358,6 @@ const cacheDOM = (function () {
   });
 
   const preventCancel = function (e) {
-    console.log(e);
     e.preventDefault();
   };
 
@@ -372,6 +366,7 @@ const cacheDOM = (function () {
     x_Player.name = xName.value || "Player X";
     o_Player.name = oName.value || "Player O";
     showResults(x_Player, o_Player, "");
+
     xName.value = "";
     oName.value = "";
   };
