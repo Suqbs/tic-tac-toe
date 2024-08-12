@@ -369,11 +369,9 @@ const cacheDOM = (function () {
 
   const changeName = function () {
     const { x_Player, o_Player } = gameController.getPlayers();
-    x_Player.name = xName.value;
-    o_Player.name = oName.value;
+    x_Player.name = xName.value || "Player X";
+    o_Player.name = oName.value || "Player O";
     showResults(x_Player, o_Player, "");
-    console.log(x_Player);
-    console.log(o_Player);
     xName.value = "";
     oName.value = "";
   };
