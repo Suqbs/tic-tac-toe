@@ -21,8 +21,6 @@
 
 body {
   min-height: 100svh;
-  font-family: Pinewood;
-  color: black;
 }
 
 img,
@@ -33,6 +31,15 @@ video {
   max-width: 100%;
 }
 /* CSS RESET ENDS HERE */
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #81b622;
+  font-family: Pinewood, Georgia, 'Times New Roman', Times, serif;
+  color: black;
+}
 
 .square svg {
   width: 100%;
@@ -93,13 +100,6 @@ dialog input {
 
 dialog button {
   font-size: 2.5rem;
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #81b622;
 }
 
 .wrapper {
