@@ -64,6 +64,7 @@ const gameController = (function () {
   let activePlayer = x_Player;
 
   const getActivePlayer = () => activePlayer;
+  const getRoundCounter = () => roundCounter;
 
   const newGame = function () {
     // newGame includes all three rounds
@@ -84,7 +85,7 @@ const gameController = (function () {
     o_Player.resetScore();
 
     // Reset Results
-    cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
+    cacheDOM.showResults(x_Player, o_Player, "");
   };
 
   const nextRound = function () {
@@ -104,7 +105,7 @@ const gameController = (function () {
     gameBoard.resetGameBoard();
 
     // Reset Results
-    cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
+    cacheDOM.showResults(x_Player, o_Player, "");
   };
 
   const switchPlayerTurn = function () {
@@ -128,7 +129,7 @@ const gameController = (function () {
       }
 
       switchPlayerTurn(); // switch player turn after a move
-      cacheDOM.showResults(x_Player, o_Player, "", roundCounter);
+      cacheDOM.showResults(x_Player, o_Player, "");
     }
   };
 
@@ -144,15 +145,14 @@ const gameController = (function () {
 
       if (isTie) {
         console.log("Tie");
-        cacheDOM.showResults(x_Player, o_Player, "TIE", roundCounter);
+        cacheDOM.showResults(x_Player, o_Player, "TIE");
         cacheDOM.winnerDialog(true);
       } else {
         console.log("Round Winner:", roundWinner);
         cacheDOM.showResults(
           x_Player,
           o_Player,
-          `${roundWinner} WINS`,
-          roundCounter
+          `${roundWinner} WINS`
         );
         cacheDOM.winnerDialog(true);
       }
@@ -184,8 +184,7 @@ const gameController = (function () {
         cacheDOM.showResults(
           x_Player,
           o_Player,
-          "NO WINNER IN THE GAME, TIE",
-          roundCounter
+          "NO WINNER IN THE GAME, TIE"
         );
         cacheDOM.winnerDialog(false);
 
@@ -203,8 +202,7 @@ const gameController = (function () {
         cacheDOM.showResults(
           x_Player,
           o_Player,
-          `WINNER OF THE GAME IS ${gameWinner.name}`,
-          roundCounter
+          `WINNER OF THE GAME IS ${gameWinner.name}`
         );
         cacheDOM.winnerDialog(false);
         console.log(
@@ -318,6 +316,7 @@ const gameController = (function () {
     makeMove,
     nextRound,
     getActivePlayer,
+    getRoundCounter,
     checkWinningCondition,
   };
 })();
@@ -328,12 +327,12 @@ const cacheDOM = (function () {
 
   const x_PlayerDOM = document.getElementById("x-player");
   const o_PlayerDOM = document.getElementById("o-player");
-  const roundDOM = document.getElementById("round");
 
   const changeNameDOM = document.getElementById("change-name");
   const newGameDOM = document.getElementById("new-game");
 
   const winnerDialogDOM = document.getElementById("winner-dialog");
+  const turnDOM = document.getElementById("turn");
   const resultDOM = document.getElementById("result");
 
   console.log(squares);
@@ -355,10 +354,6 @@ const cacheDOM = (function () {
       gameController.makeMove(row, column);
     });
   }
-
-  // nextRoundDOM.addEventListener("click", () => {
-  //   gameController.nextRound();
-  // });
 
   newGameDOM.addEventListener("click", () => {
     gameController.newGame();
@@ -413,14 +408,12 @@ const cacheDOM = (function () {
     });
   };
 
-  const showResults = function (x_Player, o_Player, result, roundCounter) {
+  const showResults = function (x_Player, o_Player, result) {
     x_PlayerDOM.textContent = `${x_Player.name}: ${x_Player.getScore()}`;
     o_PlayerDOM.textContent = `${o_Player.name}: ${o_Player.getScore()}`;
 
     resultDOM.textContent = result;
-    roundDOM.textContent = `${roundCounter} - ${
-      gameController.getActivePlayer().symbol
-    }`;
+    turnDOM.textContent = gameController.getActivePlayer().symbol;
   };
 
   const winnerDialog = function (isRoundWin) {
@@ -430,8 +423,15 @@ const cacheDOM = (function () {
       nextRoundButton.setAttribute("id", "next-round-button");
       winnerDialogDOM.appendChild(nextRoundButton);
 
+      const roundDOM = document.createElement("p");
+      roundDOM.setAttribute("id", "round");
+      roundDOM.textContent = `ROUND ${gameController.getRoundCounter()}`;
+
+      winnerDialogDOM.prepend(roundDOM);
+
       nextRoundButton.addEventListener("click", () => {
         winnerDialogDOM.close();
+        winnerDialogDOM.removeChild(roundDOM);
         winnerDialogDOM.removeChild(nextRoundButton);
         gameController.nextRound();
       });

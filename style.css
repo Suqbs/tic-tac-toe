@@ -138,7 +138,7 @@ body {
   }
 }
 
-#round {
+#turn {
   font-size: 3rem;
   background-color: #FAD02C;
   padding: 0.5rem 2rem;
@@ -169,8 +169,5 @@ dialog {
   background-color: #F8EDED;
   border-radius: 5px;
   text-align: center;
-}
-
-#result {
   font-size: 1.7rem;
 }
