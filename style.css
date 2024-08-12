@@ -169,5 +169,13 @@ dialog {
   background-color: #F8EDED;
   border-radius: 5px;
   text-align: center;
-  font-size: 1.7rem;
+  font-size: 1.3rem;
+}
+
+dialog button {
+  margin-top: 0.5rem;
+}
+
+#result {
+  font-size: 1.8rem;
 }
