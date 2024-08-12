@@ -47,7 +47,8 @@ button {
   border: 1px solid transparent;
 }
 
-button:hover, button:focus {
+button:hover,
+button:focus {
   background-color: #ffd45f;
 }
 
@@ -59,7 +60,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #81B622;
+  background-color: #81b622;
 }
 
 .wrapper {
@@ -95,7 +96,7 @@ body {
   height: 50px;
   bottom: -50px;
   border-radius: 0% 100%;
-  background-image: linear-gradient(to right, #59981A,#3D550C);
+  background-image: linear-gradient(to right, #59981a, #3d550c);
 }
 
 .square {
@@ -119,7 +120,7 @@ body {
 .square svg {
   /* animation: scale 2s; */
   transform-origin: center;
-  fill: #ECF87F;
+  fill: #ecf87f;
 }
 
 .square .scale-animation {
@@ -140,7 +141,7 @@ body {
 
 #turn {
   font-size: 3rem;
-  background-color: #FAD02C;
+  background-color: #fad02c;
   padding: 0.5rem 2rem;
   width: min(100%, 6ch);
   text-align: center;
@@ -155,6 +156,7 @@ body {
   flex-wrap: wrap;
   gap: 2rem;
   font-size: 3rem;
+  text-align: center;
 }
 
 .wrapper .buttons {
@@ -168,7 +170,7 @@ body {
 }
 
 dialog {
-  background-color: #F8EDED;
+  background-color: #f8eded;
   border-radius: 5px;
   text-align: center;
   font-size: 1.3rem;
